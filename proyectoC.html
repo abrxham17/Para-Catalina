@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Te Amo 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --rose:     #e8547a;
+      --rose-lt:  #fce8ef;
+      --rose-dk:  #b03060;
+      --coral:    #f4845f;
+      --gold:     #f5c842;
+      --lavender: #c9b8f0;
+      --mint:     #7dd8c0;
+      --cream:    #fff8f4;
+      --dark:     #2a1a2e;
+      --text:     #3d2540;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ─── CONFETTI ─── */
+    #confetti-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1.5rem 5rem;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 70% 0%,   #ffd6e6 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 90%,  #d6eeff 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%,  #e8d6ff 0%, transparent 45%),
+        var(--cream);
+    }
+
+    /* floating petals */
+    .petal {
+      position: absolute;
+      width: 14px; height: 14px;
+      border-radius: 0 60% 0 60%;
+      opacity: 0.45;
+      animation: floatPetal linear infinite;
+    }
+
+    @keyframes floatPetal {
+      0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.45; }
+      90%  { opacity: 0.45; }
+      100% { transform: translateY(110vh) rotate(420deg); opacity: 0; }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--rose);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.4rem;
+      border-radius: 999px;
+      margin-bottom: 1.8rem;
+      animation: fadeDown 0.8s ease both;
+      box-shadow: 0 4px 20px rgba(232,84,122,0.35);
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      line-height: 1.08;
+      color: var(--dark);
+      animation: fadeDown 0.9s 0.1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--rose);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: #7a5a7e;
+      margin-top: 1.2rem;
+      max-width: 460px;
+      line-height: 1.7;
+      animation: fadeDown 1s 0.2s ease both;
+    }
+
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: #c09ab0;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      animation: fadeDown 1.3s 0.5s ease both;
+    }
+
+    .scroll-hint .chevron {
+      width: 24px; height: 24px;
+      border-right: 2px solid var(--rose);
+      border-bottom: 2px solid var(--rose);
+      transform: rotate(45deg);
+      animation: bounce 1.6s infinite;
+      border-radius: 2px;
+    }
+
+    /* ─── SECTION WRAPPER ─── */
+    .section-label {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-label h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--dark);
+      line-height: 1.2;
+    }
+
+    .section-label p {
+      font-size: 0.95rem;
+      color: #9a7aaa;
+      margin-top: 0.5rem;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      width: 80px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose));
+    }
+
+    .divider::after { background: linear-gradient(90deg, var(--rose), transparent); }
+
+    /* ─── PHOTOS SECTION ─── */
+    .photos-section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 1.5rem;
+      background: #fff;
+    }
+
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1.2rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* first photo spans 2 rows — makes layout more dynamic */
+    .photo-card:first-child {
+      grid-row: span 2;
+    }
+
+    .photo-card {
+      position: relative;
+      border-radius: 1.4rem;
+      overflow: hidden;
+      cursor: pointer;
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.4s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
+      box-shadow: 0 6px 28px rgba(180,80,120,0.14);
+    }
+
+    .photo-card:first-child  { aspect-ratio: 3/5; }
+    .photo-card:not(:first-child) { aspect-ratio: 4/3; }
+
+    .photo-card:nth-child(2) { --rot:  1.6deg; }
+    .photo-card:nth-child(3) { --rot: -1.2deg; }
+    .photo-card:nth-child(4) { --rot:  0.8deg; }
+    .photo-card:nth-child(5) { --rot: -1.8deg; }
+
+    .photo-card:hover {
+      transform: rotate(0deg) scale(1.03) !important;
+      box-shadow: 0 16px 48px rgba(180,80,120,0.28);
+      z-index: 5;
+    }
+
+    /* placeholder gradient when no real photo */
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-align: center;
+      padding: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .photo-placeholder .bigicon { font-size: 2.8rem; }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(42,26,46,0.75) 0%, transparent 55%);
+      display: flex;
+      align-items: flex-end;
+      padding: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+
+    .photo-card:hover .photo-overlay { opacity: 1; }
+
+    .photo-overlay span {
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    /* INSTRUCTIONS CARD */
+    .photo-instructions {
+      max-width: 860px;
+      margin: 2rem auto 0;
+      background: var(--rose-lt);
+      border-radius: 1rem;
+      padding: 1.2rem 1.6rem;
+      font-size: 0.88rem;
+      color: var(--rose-dk);
+      line-height: 1.7;
+      border-left: 4px solid var(--rose);
+    }
+
+    .photo-instructions strong { display: block; margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .photo-instructions code {
+      background: rgba(176,48,96,0.1);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.83rem;
+    }
+
+    /* ─── MESSAGE SECTION ─── */
+    .message-section {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 1.5rem;
+      background:
+        radial-gradient(ellipse at 85% 50%, #ffe8f4 0%, transparent 55%),
+        radial-gradient(ellipse at 5%  30%, #e8f4ff 0%, transparent 50%),
+        var(--cream);
+    }
+
+    .letter {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 2rem;
+      padding: 4rem 3.5rem 3.5rem;
+      box-shadow:
+        0 2px 6px rgba(0,0,0,0.04),
+        0 12px 48px rgba(180,80,120,0.1);
+      position: relative;
+    }
+
+    .letter::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 11rem;
+      color: var(--rose-lt);
+      position: absolute;
+      top: -2.5rem;
+      left: 2rem;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .letter-greeting {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: var(--rose);
+      margin-bottom: 1.6rem;
+      font-style: italic;
+    }
+
+    .letter-body {
+      font-size: 1.05rem;
+      line-height: 1.95;
+      color: #4a3050;
+    }
+
+    .letter-body p { margin-bottom: 1.1rem; }
+    .letter-body p:last-child { margin-bottom: 0; }
+
+    .letter-signature {
+      margin-top: 2.2rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--rose-dk);
+      text-align: right;
+    }
+
+    /* animated hearts row */
+    .hearts-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 2.2rem;
+    }
+
+    .h-icon {
+      font-size: 1.4rem;
+      animation: heartpop 1.6s infinite;
+      display: inline-block;
+    }
+
+    .h-icon:nth-child(2) { animation-delay: 0.25s; }
+    .h-icon:nth-child(3) { animation-delay: 0.5s; }
+    .h-icon:nth-child(4) { animation-delay: 0.75s; }
+    .h-icon:nth-child(5) { animation-delay: 1s; }
+
+    @keyframes heartpop {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.35); }
+    }
+
+    /* ─── PLAYLIST SECTION ─── */
+    .playlist-section {
+      position: relative;
+      z-index: 1;
+      padding: 7rem 1.5rem 6rem;
+      background: var(--dark);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* subtle star dots */
+    .playlist-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .playlist-section .section-label h2 { color: #f9e8f5; }
+    .playlist-section .section-label p  { color: #a080b8; }
+
+    .playlist-wrap {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1.8rem;
+      padding: 2.5rem 2rem 2.2rem;
+      position: relative;
+      z-index: 1;
+      transition: background 0.3s;
+    }
+
+    .playlist-wrap:hover {
+      background: rgba(255,255,255,0.09);
+    }
+
+    .playlist-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .spotify-dot {
+      width: 10px; height: 10px;
+      background: #1DB954;
+      border-radius: 50%;
+      animation: pulse-green 1.5s infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(29,185,84,0.6); }
+      50%       { box-shadow: 0 0 0 8px rgba(29,185,84,0); }
+    }
+
+    .playlist-label span {
+      color: #1DB954;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .playlist-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: #f9e8f5;
+      margin-bottom: 0.5rem;
+    }
+
+    .playlist-desc {
+      font-size: 0.9rem;
+      color: #a080b8;
+      margin-bottom: 1.8rem;
+      line-height: 1.65;
+    }
+
+    .spotify-embed {
+      border-radius: 14px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .spotify-embed iframe {
+      display: block;
+      width: 100%;
+      border: none;
+    }
+
+    /* ─── CLOSING BANNER ─── */
+    .closing {
+      background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+      text-align: center;
+      padding: 4rem 1.5rem;
+      color: #fff;
+    }
+
+    .closing h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .closing p {
+      font-size: 1rem;
+      opacity: 0.85;
+      font-weight: 300;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark);
+      text-align: center;
+      padding: 1.4rem;
+      font-size: 0.8rem;
+      color: #5a3a64;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    footer span { color: var(--rose); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50%       { transform: rotate(45deg) translateY(7px); }
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.30s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .photos-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .photo-card:first-child {
+        grid-column: span 2;
+        grid-row: span 1;
+        aspect-ratio: 16/9;
+      }
+      .photo-card:not(:first-child) {
+        aspect-ratio: 1;
+      }
+      .letter { padding: 3rem 1.6rem 2.5rem; }
+      .letter::before { font-size: 7rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero" id="hero">
+  <span class="hero-badge">✨ Hecho con mucho amor para ti ✨</span>
+  <h1>No hay nadie<em>como tu 💖</em></h1>
+  <p class="hero-sub">Esto lo hice exclusivamente para ti, con todo mi amor.</p>
+  <div class="scroll-hint">
+    <span>Hay mas cosas abajo</span>
+    <div class="chevron"></div>
+  </div>
+</section>
+
+<!-- ══════ PHOTOS ══════ -->
+<section class="photos-section" id="fotos">
+  <div class="section-label reveal">
+    <h2>Momentos inolvidables 📸</h2>
+    <div class="divider">
+      <span style="font-size:1.1rem">🌸</span>
+    </div>
+    <p></p>
+  </div>
+
+  <div class="photos-grid reveal reveal-delay-1">
+
+    <!-- ── FOTO 1 ── -->
+    <div class="photo-card">
+      <img src="fotos/foto1.jpeg" alt="Nosotros" style="width:100%;height:100%;object-fit:cover;display:block;" />
+    </div>
+
+    <!-- ── FOTO 2 ── -->
+    <div class="photo-card">
+      <img src="fotos/foto2.jpeg" alt="Foto 2" style="width:100%;height:100%;object-fit:cover;display:block;" />
+    </div>
+
+    <!-- ── FOTO 3 ── -->
+    <div class="photo-card">
+      <img src="fotos/foto3.jpeg" alt="Foto 3" style="width:100%;height:100%;object-fit:cover;display:block; object-position: 30% 65%" />
+    </div>
+
+    <!-- ── FOTO 4 ── -->
+    <div class="photo-card">
+      <img src="fotos/foto4.jpeg" alt="Foto 4" style="width:100%;height:100%;object-fit:cover;display:block; object-position: center bottom;" />
+    </div>
+
+    <!-- ── FOTO 5 ── -->
+    <div class="photo-card">
+      <img src="fotos/foto5.jpeg" alt="Foto 5" style="width:100%;height:100%;object-fit:cover;display:block; object-position: 30% 75%;" />
+    </div>
+
+  </div>
+
+  <div class="photo-instructions reveal reveal-delay-2">
+     Todas las fotos son del mismo dia porque fue muy especial e importante para nosotros. <br>no es que no tuviera mas fotos de los dos juntos.<br>
+  </div>
+</section>
+
+<!-- ══════ MESSAGE ══════ -->
+<section class="message-section" id="mensaje">
+  <div class="section-label reveal">
+    <h2>Te quiero decir que… 💌</h2>
+    <div class="divider"><span style="font-size:1.1rem">💕</span></div>
+  </div>
+
+  <div class="letter reveal reveal-delay-1">
+    <div class="letter-greeting">Para Catalina</div>
+    <div class="letter-body">
+      <p>
+        A veces no creo que te des cuenta de lo fuerte que eres. Incluso cuando tienes días pesados o sientes que ya no puedes más, sigues adelante, y eso es algo que admiro muchísimo de ti.
+         Me encanta la manera en que enfrentas las cosas, porque aun con todo el cansancio o las dificultades, nunca dejas de dar lo mejor de ti.
+        <br> Hay personas que llegan a tu vida y la cambian por completo sin que te des cuenta, y tú eres una de esas personas para mí. Desde que llegaste, muchas cosas en mi vida empezaron a sentirse diferentes, más bonitas, más tranquilas y con más sentido. Contigo he mejorado como persona y tambien aprendí que el amor también puede sentirse como hogar, como paz y como compañía.<br>
+      </p>
+      <p>
+        Quiero que recuerdes que no tienes que tener todo resuelto hoy; poco a poco las cosas van tomando su lugar. Confío muchísimo en ti y en todo lo que eres capaz de lograr, porque sé la gran mujer que eres y todo el potencial que tienes dentro de ti.
+        <br>quiero poder ser esa persona que te acompañe en cada etapa de tu vida, en tus mejores días y también en los más difíciles. Quiero verte cumplir tus sueños, apoyarte cuando sientas que no puedes más y celebrar contigo cada logro que llegue a tu vida.<br>
+      </p>
+      <p>
+        Gracias por ser tú, por compartir tu vida conmigo y por hacerme sentir tan amado. Eres una persona increíble, me siento muy afortunado de tenerte a mi lado y sinceramente me hace muy feliz poder ser parte de tu vida. Te amo con todo mi corazón, y siempre estaré para ti.
+        Muchas veces cometo errores, digo cosas sin pensar, hago chistes durante conversaciones serias o importantes
+      </p>
+      <p>
+        Se que muchas veces cometo errores, digo cosas sin pensar, hago chistes malos durante conversaciones serias o importantes y a veces no soy el mejor para expresar lo que siento, pero quiero que sepas que cada cosa que hago, cada palabra que digo y cada chiste malo que hago, lo hago con la intención de hacerte sonreír, de hacerte sentir amada y de compartir momentos divertidos contigo. A veces mi forma de mostrar amor es un poco torpe (asi como yo), pero siempre viene desde un lugar de cariño y de querer verte feliz. Eres increíblemente paciente conmigo, y eso es algo que valoro muchísimo.
+        <br>Como sabras no soy muy bueno expresenado mis sentimientos por eso busque otra forma de poder expresar todo ese amor que siento por ti. Quise hacerlo de una forma poco convencional como es toda esta pagina web, pero tambien quise expresarme atraves de la musica que es algo importante para mi porque hace parte de mi dia a dia y me ha ayudado mucho.<br>Por eso mismo cree una playlist con canciones que me hacen pensar en ti y quisiera poder transmitirte esos sentimientos atraves de la musica, para esos momentos en los que a pesar de no poder estar contigo, me sientas un poquito mas cerca.<br>
+      </p>
+    </div>
+    <div class="letter-signature">Con todo mi amor, Abraham</div>
+  </div>
+</section>
+
+<!-- ══════ PLAYLIST ══════ -->
+<section class="playlist-section" id="playlist">
+  <div class="section-label reveal">
+    <h2>Tu Nueva Playlist</h2>
+    <p>Canciones que te dedico con mucho amor</p>
+  </div>
+
+  <div class="playlist-wrap reveal reveal-delay-1">
+    <div class="playlist-label">
+      <div class="spotify-dot"></div>
+      <span>Spotify · En reproducción</span>
+    </div>
+    <div class="playlist-title">Para Mi Novia Linda</div>
+    <p class="playlist-desc">Cada canción de esta playlist la elegí pensando en ti.<br>Espero que disfrutes todas las canciones y que encuentres el mensaje secreto.</p>
+    <div class="spotify-embed">
+      <iframe
+        style="border-radius:12px"
+        src="https://open.spotify.com/embed/playlist/21PNzz8M9lT7SWEPlMCu6U?utm_source=generator"
+        width="100%"
+        height="352"
+        frameBorder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CLOSING BANNER ══════ -->
+<div class="closing reveal">
+  <p> solo soy un tonto que te ama mucho </p>
+  <br><br>
+  <img src="fotos/foto6.jpeg" alt="Nosotros" style="
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.6);
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  "/>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  Hecho con mucho amor <span>♥</span> y mucho código · <span id="year"></span>
+</footer>
+
+<!-- ══════ SCRIPTS ══════ -->
+<script>
+
+  /* ── Scroll reveal ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  /* ── Floating petals in hero ── */
+  const hero = document.querySelector('.hero');
+  const petalColors = ['#f4845f','#e8547a','#c9b8f0','#f5c842','#7dd8c0','#fce8ef'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: -20px;
+      background: ${petalColors[i % petalColors.length]};
+      animation-duration: ${7 + Math.random() * 8}s;
+      animation-delay: ${Math.random() * 10}s;
+      transform: rotate(${Math.random() * 360}deg);
+      width: ${10 + Math.random() * 10}px;
+      height: ${10 + Math.random() * 10}px;
+    `;
+    hero.appendChild(p);
+  }
+
+  /* ── Confetti burst on load ── */
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['#e8547a','#f4845f','#f5c842','#c9b8f0','#7dd8c0','#fff'];
+  let particles = [];
+
+  function createBurst() {
+    for (let i = 0; i < 120; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height * 0.5 - 20,
+        r: 4 + Math.random() * 5,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        vx: (Math.random() - 0.5) * 6,
+        vy: 1.5 + Math.random() * 5,
+        alpha: 1,
+        rot: Math.random() * Math.PI * 2,
+        rotV: (Math.random() - 0.5) * 0.2,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle',
+      });
+    }
+  }
+
+  function animateConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.alpha > 0.02);
+    particles.forEach(p => {
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy += 0.12;
+      p.rot += p.rotV;
+      p.alpha -= 0.008;
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.r / 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+    if (particles.length) requestAnimationFrame(animateConfetti);
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      createBurst();
+      animateConfetti();
+    }, 400);
+  });
+</script>
+
+</body>
+</html>
